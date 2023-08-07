@@ -8,6 +8,6 @@ defmodule CounterTest do
         IO.puts("Final counter value: #{counter_module.get()}")
       end)
     end)
-    |> Enum.each(&Process.join/1)
+   # |> Enum.each(&Process.join/1)
   end
 end
