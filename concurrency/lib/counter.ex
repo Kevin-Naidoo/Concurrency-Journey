@@ -7,6 +7,7 @@ defmodule Counter do
     GenServer.start_link(__MODULE__, initial_count, name: __MODULE__)
   end
 
+  @spec increment :: :ok
   def increment do
     GenServer.cast(__MODULE__, :increment)
   end

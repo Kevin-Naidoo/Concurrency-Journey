@@ -2,37 +2,44 @@ defmodule Cart do
   use GenServer
 
   # Callbacks
-  def init(init_arg) do
-    {:ok, init_arg}
+def init(list) do
+  {:ok, list}
+end
+
+  def handle_cast({:add_to_cart, item}, list) do
+    {:noreply, list ++ [item]}
   end
 
-  def handle_call(:add_to_cart, _from, state) do
-    {:reply, :ok, }
+  def handle_cast({:remove_from_cart,item},list ) do
+    list = Enum.reject(list, fn(i) -> i == item end)
+    {:noreply, list}
   end
 
-  def handle_call(:decrement, _from, state) do
-    {:reply, :ok, state - 1}
+  def handle_call(:get_cart, _from, list) do
+
+    display_list = list
+    |> Enum.frequencies()
+    |> Map.to_list()
+    {:reply, display_list, list}
   end
 
-  def handle_call(:get, _from, state) do
-    {:reply, state, state}
-  end
 
-  def start_link(init_value \\ 0) do
-    GenServer.start_link(__MODULE__, init_value, name: __MODULE__)
-  end
 
   # Client API
 
-  def add_to_cart(item) do
-    GenServer.call(__MODULE__, :add_to_cart, item)
+  def start_link() do
+    GenServer.start_link(__MODULE__, [])
   end
 
-  def remove_from_cart(item) do
-    GenServer.call(__MODULE__, :remove_from_cart, item)
+  def add_to_cart(pid, item) do
+    GenServer.cast(pid,{:add_to_cart, item})
   end
 
-  def get_cart do
-    GenServer.call(__MODULE__, :get_cart)
+  def remove_from_cart(pid, item) do
+    GenServer.cast(pid,{:remove_from_cart, item})
+  end
+
+  def get_cart(pid) do
+    GenServer.call(pid, :get_cart)
   end
 end

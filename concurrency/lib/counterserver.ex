@@ -1,6 +1,9 @@
 defmodule CounterServer do
   use GenServer
 
+  def init(init_arg) do
+    {:ok, init_arg}
+  end
   # Callbacks
 
   def handle_call(:increment, _from, state) do
